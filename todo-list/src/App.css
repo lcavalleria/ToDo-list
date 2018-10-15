@@ -1,0 +1,14 @@
+.column {
+    background-color: #dedede;
+    border-radius: 3%;
+    width: 27.3%;
+    padding: 2%;
+    margin: 1%;
+    float: left;
+}
+
+.task {
+    padding-left: 3%;
+    border-radius: 3%;
+    background-color: #aaaaaa;
+}
