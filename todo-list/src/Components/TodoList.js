@@ -3,35 +3,38 @@ import Task from './Task';
 import '../App.css';
 
 class TodoList extends Component {
+    renderArr(arr) {
+        return (
+            arr.map((task) => <Task key={task.id} task={task} />));
+    }
+    
     render() {
-        var renderedDone = [];
-        var renderedDoing = [];
-        var renderedTodo = [];
+        var arrDone = [];
+        var arrDoing = [];
+        var arrTodo = [];
         this.props.tasks.forEach(task => {
             if (task.state === 1)
-                renderedTodo.push(task);
+                arrTodo.push(task);
             else if (task.state === 2) 
-                renderedDoing.push(task);
+                arrDoing.push(task);
             else if (task.state === 3) 
-                renderedDone.push(task);
+                arrDone.push(task);
             else console.error("ERROR!! task state should be 1 2 or 3");
         });
-        console.log(renderedDone);
+
         return (
             <div>
-                <div><button>add</button></div>
                 <div className="column" id="done">
                     <h1>Done</h1>
-                    {renderedDone.map((task) => <Task key={task.id} task={task}/>)}
+                    {this.renderArr(arrDone)}
                 </div>
                 <div className="column" id="doing">
                     <h1>Doing</h1>
-                    {renderedDoing.map((task) => <Task key={task.id} task={task}/>)}
+                    {this.renderArr(arrDoing)}
                 </div>
                 <div className="column" id="todo">
                     <h1>To Do</h1>
-                    {renderedTodo.map((task) => <Task key={task.id} task={task}/>)}
-
+                    {this.renderArr(arrTodo)}
                 </div>
             </div>
         );

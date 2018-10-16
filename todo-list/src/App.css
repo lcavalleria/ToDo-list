@@ -1,6 +1,21 @@
+.addBtnDiv{
+    position: fixed;
+    right: 5px;
+    bottom: 5px;
+}
+
+.addBtn{
+    background-color: #198d19;
+    border: none;
+    color: #7deb7d;
+    font-size: 28px;
+    border-radius: 3px;
+    width: 40px;
+    height: 40px;
+}
+
 .column {
-    background-color: #dedede;
-    border-radius: 3%;
+    background-color: white;
     width: 27.3%;
     padding: 2%;
     margin: 1%;
@@ -9,6 +24,28 @@
 
 .task {
     padding-left: 3%;
-    border-radius: 3%;
+    margin: 2%;
     background-color: #aaaaaa;
+}
+
+.addTask {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background-color: #00000090;
+}
+
+.taskForm {
+    position: absolute;
+    width: 250px;
+    left: 0; right: 0;
+    top: 20%;
+    margin: auto;
+    background-color: white;
+    text-align: center;
+}
+
+.formElem {
+    width: 195px;
+    margin-bottom: 35px;
+    resize: none;
 }

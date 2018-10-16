@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TodoList from './Components/TodoList';
+import AddTask from './Components/AddTask';
 import './App.css';
 
 class App extends Component {
@@ -43,18 +44,56 @@ class App extends Component {
                     description: "tyu ytutyu tt tyut...",
                     state: 1
                 }
-            ]
+            ],
+            showAddTask: false
         }
+        this.state.count = 7;
     }
 
+    incrementCount() {
+        this.setState((state) => {
+            return { count: this.state.count + 1 }
+        });
+    }
 
+    addTask(task) {
+        let tmpTasks = this.state.tasks;
+        tmpTasks.push(task);
+        this.setState((state) => {
+            return { tasks: tmpTasks }
+        });
+        this.hideAddTask();
+    }
+
+    showAddTask() {
+        this.setState((state) => {
+            return { showAddTask: true }
+        });
+    }
+
+    hideAddTask() {
+        this.setState((state) => {
+            return { showAddTask: false }
+        });
+    }
     render() {
-    return (
-      <div>
-            <TodoList tasks={this.state.tasks}/>
-      </div>
-    );
-  }
+        let renderAddTaskForm =
+            <AddTask
+                count={this.state.count}
+                incrementCount={this.incrementCount.bind(this)}
+                hideAddTask={this.hideAddTask.bind(this)}
+                handleSubmit={this.addTask.bind(this)}>
+            </AddTask>
+        return (
+            <div>
+                <div className="addBtnDiv">
+                    <button className="addBtn" onClick={this.showAddTask.bind(this)}>+</button>
+                </div>
+                {this.state.showAddTask ? renderAddTaskForm : ""}
+                <TodoList tasks={this.state.tasks} />
+            </div>
+        );
+    }
 }
 
 export default App;
