@@ -7,45 +7,10 @@ class App extends Component {
     constructor() {
         super();
         this.state = {
-            tasks: [
-                {
-                    id: 1,
-                    title: "done 1",
-                    description: "blah blah blah blah...",
-                    state: 3
-                },
-                {
-                    id: 2,
-                    title: "done 2",
-                    description: "asdf efasdf v fxvzx...",
-                    state: 3
-                },
-                {
-                    id: 3,
-                    title: "doing 1",
-                    description: "bc vb cxvc bc cc vb...",
-                    state: 2
-                },
-                {
-                    id: 4,
-                    title: "todo 1",
-                    description: "tyu ytutyu tt tyut...",
-                    state: 1
-                },
-                {
-                    id: 5,
-                    title: "todo 2",
-                    description: "tyu ytutyu tt tyut...",
-                    state: 1
-                },
-                {
-                    id: 6,
-                    title: "todo 3",
-                    description: "tyu ytutyu tt tyut...",
-                    state: 1
-                }
-            ],
-            showAddTask: false
+            tasks: [],
+            addTaskShowing: false,
+            formTask: {},
+            isNewTask: true
         }
         this.state.count = 7;
     }
@@ -58,39 +23,84 @@ class App extends Component {
 
     addTask(task) {
         let tmpTasks = this.state.tasks;
-        tmpTasks.push(task);
+        let found = false;
+        for (var i = tmpTasks.length - 1; i >= 0; i--)
+            if (tmpTasks[i].id === task.id) {
+                tmpTasks[i] = task;
+                found = true;
+                break;
+            }
+        if (!found)
+            tmpTasks.push(task);
         this.setState((state) => {
             return { tasks: tmpTasks }
         });
         this.hideAddTask();
     }
 
-    showAddTask() {
+    handleDelete(task) {
+        let tmpTasks = this.state.tasks;
+        let found = false;
+        for (var i = tmpTasks.length - 1; i >= 0; i--)
+            if (tmpTasks[i].id === task.id) {
+                tmpTasks.splice(i, 1);
+                found = true;
+                break;
+            }
+        if (!found)
+            console.error("Excuse me wtf: trying to delete an element not present in the array");
         this.setState((state) => {
-            return { showAddTask: true }
+            return { tasks: tmpTasks }
         });
     }
 
+    showAddTask() {
+        this.setState((state) => {
+            return { addTaskShowing: true }
+        });
+    }
+
+    handleAddTask() {
+        this.setState((state) => {
+            return { formTask: {} , isNewTask: true }
+        });
+        this.showAddTask();
+    }
+
+    handleEditTask(task) {
+        this.setState((state) => {
+            return { formTask: task , isNewTask: false}
+        });
+        this.showAddTask();
+    }
+
+
     hideAddTask() {
         this.setState((state) => {
-            return { showAddTask: false }
+            return { addTaskShowing: false }
         });
     }
     render() {
+        console.log(this.state.tasks);
         let renderAddTaskForm =
             <AddTask
                 count={this.state.count}
                 incrementCount={this.incrementCount.bind(this)}
+                task={this.state.formTask}
+                isNew={this.state.isNewTask}
                 hideAddTask={this.hideAddTask.bind(this)}
                 handleSubmit={this.addTask.bind(this)}>
             </AddTask>
         return (
             <div>
                 <div className="addBtnDiv">
-                    <button className="addBtn" onClick={this.showAddTask.bind(this)}>+</button>
+                    <button className="addBtn" onClick={this.handleAddTask.bind(this)}>+</button>
                 </div>
-                {this.state.showAddTask ? renderAddTaskForm : ""}
-                <TodoList tasks={this.state.tasks} />
+                {this.state.addTaskShowing ? renderAddTaskForm : ""}
+                <TodoList
+                    handleEditTask={this.handleEditTask.bind(this)}
+                    handleDelete={this.handleDelete.bind(this)}
+                    tasks={this.state.tasks} />
             </div>
         );
     }

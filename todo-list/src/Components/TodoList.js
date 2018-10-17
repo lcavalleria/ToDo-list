@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
-import Task from './Task'; 
+import Task from './Task';
 import '../App.css';
 
 class TodoList extends Component {
     renderArr(arr) {
         return (
-            arr.map((task) => <Task key={task.id} task={task} />));
+            arr.map((task) => <Task
+                key={task.id}
+                task={task}
+                handleEditTask={this.props.handleEditTask}
+                handleDelete={this.props.handleDelete}
+            />));
     }
-    
+
     render() {
         var arrDone = [];
         var arrDoing = [];
@@ -15,9 +20,9 @@ class TodoList extends Component {
         this.props.tasks.forEach(task => {
             if (task.state === 1)
                 arrTodo.push(task);
-            else if (task.state === 2) 
+            else if (task.state === 2)
                 arrDoing.push(task);
-            else if (task.state === 3) 
+            else if (task.state === 3)
                 arrDone.push(task);
             else console.error("ERROR!! task state should be 1 2 or 3");
         });
