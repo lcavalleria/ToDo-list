@@ -10,9 +10,59 @@ class App extends Component {
             tasks: [],
             addTaskShowing: false,
             formTask: {},
-            isNewTask: true
+            isNewTask: true,
+            user: {
+                name: "lluis"
+            },
+            count: 0
         }
-        this.state.count = 7;
+    }
+
+    updateClient() {
+        fetch("/users/" + this.state.user.name)
+            .then((res) => {
+                if (res.status === 204)
+                    return { tasks: [], count: 0 };
+                return res.json();
+            })
+            .then(resObj => {
+                this.setState((state) => {
+                    return {
+                        tasks: resObj.tasks,
+                        count: resObj.count
+                    }
+                });
+            });
+    }
+
+    componentDidMount() {
+        this.updateClient();
+    }
+
+    updateServer() {
+        fetch("/users/" + this.state.user.name, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tasks: this.state.tasks,
+                addedTask: this.state.isNewTask
+            })
+        })
+            .then((res) => {
+                var hue = res.json();
+                return (hue);
+            })
+            .then(resObj => {
+                this.setState((state) => {
+                    return {
+                        tasks: resObj.tasks,
+                        count: resObj.count
+                    }
+                });
+            });
     }
 
     incrementCount() {
@@ -35,6 +85,7 @@ class App extends Component {
         this.setState((state) => {
             return { tasks: tmpTasks }
         });
+        this.updateServer();
         this.hideAddTask();
     }
 
@@ -50,8 +101,9 @@ class App extends Component {
         if (!found)
             console.error("Excuse me wtf: trying to delete an element not present in the array");
         this.setState((state) => {
-            return { tasks: tmpTasks }
+            return { tasks: tmpTasks, isNewTask: false }
         });
+        this.updateServer();
     }
 
     showAddTask() {
@@ -62,26 +114,25 @@ class App extends Component {
 
     handleAddTask() {
         this.setState((state) => {
-            return { formTask: {} , isNewTask: true }
+            return { formTask: {}, isNewTask: true }
         });
         this.showAddTask();
     }
 
     handleEditTask(task) {
         this.setState((state) => {
-            return { formTask: task , isNewTask: false}
+            return { formTask: task, isNewTask: false }
         });
         this.showAddTask();
     }
-
 
     hideAddTask() {
         this.setState((state) => {
             return { addTaskShowing: false }
         });
     }
+
     render() {
-        console.log(this.state.tasks);
         let renderAddTaskForm =
             <AddTask
                 count={this.state.count}
