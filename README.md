@@ -1,4 +1,4 @@
-# test
+# todo-list
 
 go inside "todo-list"
 
