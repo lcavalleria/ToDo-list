@@ -1,9 +1,19 @@
-# todo-list
+on another terminal go inside the folder "server"
 
-go inside "todo-list"
+run 'npm install'
 
-run npm install
+run 'PORT=3001 npm start'
 
-run npm start
 
-localhost:3000 in browser
+go inside the folder "todo-list"
+
+run 'npm install'
+
+run 'npm start'
+
+
+
+
+
+
+go to localhost:3000 in browser
