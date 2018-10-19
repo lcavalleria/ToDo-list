@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TodoList from './Components/TodoList';
 import AddTask from './Components/AddTask';
+import Login from './Components/Login';
 import './App.css';
 
 class App extends Component {
@@ -9,17 +10,16 @@ class App extends Component {
         this.state = {
             tasks: [],
             addTaskShowing: false,
+            loginShowing: true,
             formTask: {},
             isNewTask: true,
-            user: {
-                name: "lluis"
-            },
+            username: "",
             count: 0
         }
     }
 
     updateClient() {
-        fetch("/users/" + this.state.user.name)
+        fetch("/users/" + this.state.username)
             .then((res) => {
                 if (res.status === 204)
                     return { tasks: [], count: 0 };
@@ -35,12 +35,8 @@ class App extends Component {
             });
     }
 
-    componentDidMount() {
-        this.updateClient();
-    }
-
-    updateServer() {
-        fetch("/users/" + this.state.user.name, {
+    updateServerTasks() {
+        fetch("/users/" + this.state.username, {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -51,9 +47,8 @@ class App extends Component {
                 addedTask: this.state.isNewTask
             })
         })
-            .then((res) => {
-                var hue = res.json();
-                return (hue);
+            .then(res => {
+                return res.json();
             })
             .then(resObj => {
                 this.setState((state) => {
@@ -62,6 +57,35 @@ class App extends Component {
                         count: resObj.count
                     }
                 });
+            });
+    }
+
+    updateServerLogin() {
+        console.log({
+            name: this.state.username
+        });
+        fetch("/users/login", {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: this.state.username
+            })
+        })
+            .then(res => {
+                if (res.ok)
+                    return res.json();
+            })
+            .then(resObj => {
+                if (resObj)
+                    this.setState((state) => {
+                        return {
+                            tasks: resObj.tasks,
+                            count: resObj.count
+                        }
+                    });
             });
     }
 
@@ -85,7 +109,7 @@ class App extends Component {
         this.setState((state) => {
             return { tasks: tmpTasks }
         });
-        this.updateServer();
+        this.updateServerTasks();
         this.hideAddTask();
     }
 
@@ -103,7 +127,7 @@ class App extends Component {
         this.setState((state) => {
             return { tasks: tmpTasks, isNewTask: false }
         });
-        this.updateServer();
+        this.updateServerTasks();
     }
 
     showAddTask() {
@@ -132,6 +156,21 @@ class App extends Component {
         });
     }
 
+    hideLogin() {
+        this.setState((state) => {
+            return { loginShowing: false }
+        });
+    }
+
+    login(name) {
+        this.setState((state) => {
+            return { username: name }
+        }, () => {
+            this.updateServerLogin();
+            this.hideLogin();
+        });
+    }
+
     render() {
         let renderAddTaskForm =
             <AddTask
@@ -142,11 +181,16 @@ class App extends Component {
                 hideAddTask={this.hideAddTask.bind(this)}
                 handleSubmit={this.addTask.bind(this)}>
             </AddTask>
+        let renderLoginForm =
+            <Login
+                handleSubmit={this.login.bind(this)}>
+            </Login>
         return (
             <div>
                 <div className="addBtnDiv">
                     <button className="addBtn" onClick={this.handleAddTask.bind(this)}>+</button>
                 </div>
+                {this.state.loginShowing ? renderLoginForm : ""}
                 {this.state.addTaskShowing ? renderAddTaskForm : ""}
                 <TodoList
                     handleEditTask={this.handleEditTask.bind(this)}

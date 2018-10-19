@@ -5,12 +5,13 @@ import '../App.css';
 class TodoList extends Component {
     renderArr(arr) {
         return (
-            arr.map((task) => <Task
-                key={task.id}
-                task={task}
-                handleEditTask={this.props.handleEditTask}
-                handleDelete={this.props.handleDelete}
-            />));
+            arr.map((task) =>
+                <Task
+                    key={task.id}
+                    task={task}
+                    handleEditTask={this.props.handleEditTask}
+                    handleDelete={this.props.handleDelete}
+                />));
     }
 
     render() {
